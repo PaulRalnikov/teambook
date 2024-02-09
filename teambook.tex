@@ -299,4 +299,38 @@ ll getFlow() {
     }
 }
     \end{verbatim}   
+    
+    \subsection{Манакер}
+    
+    \begin{verbatim}
+vector<int> man_odd(string &t) {
+    int m = sz(t);
+    vector<int> d(m, 1);
+    int l = 0, r = 0;
+    for (int i = 1; i < m; i++) {
+        if (i < r)
+            d[i] = min(r - i + 1, d[l + r - i]);
+        while (i - d[i] >= 0 && i + d[i] < m && t[i - d[i]] == t[i + d[i]])
+            d[i]++;
+        if (i + d[i] - 1 > r)
+            l = i - d[i] + 1, r = i + d[i] - 1;
+    }
+    return d;
+}
+
+vector<int> man_even(string &t) {
+    int m = sz(t);
+    vector<int> d(m, 0);
+    int l = -1, r = -1;
+    for (int i = 0; i < m - 1; i++) {
+        if (i < r)
+            d[i] = min(r - i, d[l + r - i - 1]);
+        while (i - d[i] >= 0 && i + d[i] + 1 < m && t[i - d[i]] == t[i + d[i] + 1])
+            d[i]++;
+        if (i + d[i] > r)
+            l = i - d[i] + 1, r = i + d[i];
+    }
+    return d;
+}
+    \end{verbatim}   
 \end{document}
