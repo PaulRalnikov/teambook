@@ -21,7 +21,7 @@
     
     \maketitle
     
-    \section{FFT}
+    \section*{FFT}
 
     \begin{verbatim}
 
@@ -77,7 +77,7 @@ void mult(int a[], int b[], int sz) {
 }
     \end{verbatim}
 
-    \section{Суфмас + LCP}
+    \section*{Суфмас + LCP}
 
     \begin{verbatim}
 
@@ -155,7 +155,7 @@ vector<int> build_lcp(string &t, vector<int> &suff) {
 }
     \end{verbatim}
 
-    \section{Потоки}
+    \section*{Потоки}
 
     \subsection{Диниц}
 
@@ -300,7 +300,7 @@ ll getFlow() {
 }
     \end{verbatim}   
     
-    \section{Строки}
+    \section*{Строки}
     \subsection{Манакер}
     
     \begin{verbatim}
@@ -334,4 +334,89 @@ vector<int> man_even(string &t) {
     return d;
 }
     \end{verbatim}   
+
+    \subsection{Шаблон}
+
+    \begin{verbatim}
+        
+///bs:-input,console
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+
+#define f first
+#define s second
+//#define x first
+//#define y second
+#define pb push_back
+#define _ << ' ' <<
+#define TEST ""
+#define all(x) x.begin(), x.end()
+#define mp make_pair
+#define sz(x) (int)x.size()
+//#define cerr if(0) cerr
+//#define int long long
+#define Time() (ld)clock() / CLOCKS_PER_SEC
+
+//#pragma GCC optimize ("O3")
+//#pragma GCC optimize ("Ofast")
+//#pragma GCC target ("sse,sse2,sse3,sse4,avx,avx2")
+//#pragma comment(linker, "/STACK:160777216")
+
+//before loops:
+//#pragma unroll(3)
+
+using namespace std;
+//using namespace __gnu_pbds;
+
+typedef long long ll;
+typedef long double ld;
+typedef pair<int, int> pii;
+typedef pair<long long, long long> pll;
+
+#ifdef LOCAL
+    #define cerr cout
+#else
+    #define cerr if(0) cerr
+#endif
+
+//template<typename T>
+//using orderd_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
+template<typename T1, typename T2>
+__attribute__((always_inline)) common_type_t<T1, T2> min(const T1 &a, const T2 &b) {
+    return a < b ? a : b;
+}
+
+template<typename T3, typename T4>
+__attribute__((always_inline)) common_type_t<T3, T4> max(const T3 &a, const T4 &b) {
+    return a > b ? a : b;
+}
+
+template<typename T>
+using normal_queue = priority_queue<T, vector<T>, greater<T> >;
+
+void solve() {
+    
+}
+
+signed main() {
+    cout << fixed << setprecision(10);
+#ifdef LOCAL
+#else
+    //freopen("input.txt", "r", stdin);
+    //freopen("output.txt", "w", stdout);
+    //freopen(TEST".in", "r", stdin);
+    //freopen(TEST".out", "w", stdout);
+#endif
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    int tests = 1;
+    //cin >> tests;
+    while (tests--) {
+        solve();
+    }
+    return 0;
+}
+        
+    \end{verbatim}
 \end{document}
