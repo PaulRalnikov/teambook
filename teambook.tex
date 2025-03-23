@@ -81,7 +81,8 @@ void mult(int a[], int b[], int sz) {
 
     \begin{verbatim}
 
-vector<int> suffix_array(string &t) {
+vector<int> suffix_array(string t) {
+    t += '$';
     int m = sz(t);
     vector<int> suff(m);
     iota(all(suff), 0);
@@ -124,7 +125,7 @@ vector<int> suffix_array(string &t) {
         }
         color.swap(new_color);
     }
-    return suff;
+    return vector(suff.begin() + 1, suff.end());
 }
 
 const int inf = 1e9;
