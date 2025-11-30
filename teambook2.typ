@@ -36,6 +36,9 @@
   team-str: [SPbSU (Dobrynin, Ralnikov, Ternopol)]
 )
 
+#outline()
+#pagebreak()
+
 #algo(name: [FFT])[
 ```cpp
 const int MOD = 998244353;
@@ -45,7 +48,7 @@ const int SZ = (1 << LOG_SZ);
 void init_fft(int log_sz) {
     int root = deg(3, (MOD - 1) >> log_sz);
     assert(deg(root, 1 << (log_sz)) == 1 && deg(root, 1 << (log_sz - 1)) != 1);
-    
+
     int sz = (1 << LOG_SZ);
     for (int i = 0, r = 1; i < sz; i++, r = mul(r, root))
         roots[i] = r;
@@ -98,7 +101,7 @@ const int MAXV = 1e5, MAXE = 1e6, INF = 1e9;
 struct Edge{
     int from, to, cap, flow;
 
-    Edge(int from = 0, int to = 0, int cap = 0, int flow = 0): 
+    Edge(int from = 0, int to = 0, int cap = 0, int flow = 0):
         from(from), to(to), cap(cap), flow(flow) {}
 }edge[MAXE];
 
@@ -550,10 +553,228 @@ __attribute__((always_inline)) common_type_t<T3, T4> max(const T3 &a, const T4 &
 ```
 ]
 
+#algo(name: [Xor-базис])[
+```cpp
+int basis[LOG];
+
+void build_basis(vector<int> a) {
+    int n = sz(s);
+    sort(all(a));
+
+    for (int i = n - 1; i >= 0; i--) {
+        int x = a[i];
+        for (int j = LOG - 1; j >= 0; j--) {
+            if (((x >> j) & 1) == 0) {
+                continue;
+            }
+            if (basis[j] != 0) {
+                x ^= basis[j];
+            } else {
+                basis[j] = x;
+                break;
+            }
+        }
+    }
+
+    for (int i = 0; i < LOG; i++) {
+        if (!basis[i]) {
+            continue;
+        }
+        for (int j = i + 1; j < LOG; j++) {
+            if (!basis[j]) {
+                continue;
+            }
+            if ((basis[j] >> i) & 1) {
+                basis[j] ^= basis[i];
+            }
+        }
+    }
+}
+```
+]
+
 #algo(name: [Простые числа])[
 #text(red)[TODO]
 ]
 
-#algo(name: [Геометрия])[
-#text(red)[TODO]
+#algo(name: [Геометрия. Целочисленное])[
+```cpp
+
+struct Point {
+    int x, y;
+    Point(int x1 = 0, int y1 = 0) {
+        x = x1;
+        y = y1;
+    }
+
+    bool friend operator== (const Point& a, const Point& b) {
+        return a.x == b.x && a.y == b.y;
+    }
+
+    bool friend operator!= (const Point& a, const Point& b) {
+        return !(a == b);
+    }
+};
+
+istream& operator>>(istream& in, Point& p) {
+    return in >> p.x >> p.y;
+}
+
+ostream& operator<<(ostream& out, const Point& p) {
+    return out << p.x << ' ' << p.y;
+}
+
+ll dst2(const Point& a, const Point& b) {
+    ll dx = a.x - b.x;
+    ll dy = b.y - b.y;
+    return dx * dx + dy * dy;
+}
+
+ld dst(const Point& a, const Point& b) {
+    return sqrt(dst2(a, b));
+}
+
+struct Vec {
+    int x, y;
+
+    Vec(int x = 0, int y = 0): x(x), y(y) {}
+
+    Vec(const Point& a, const Point& b): x(b.x - a.x), y(b.y - a.y) {}
+
+    ll len2() const {
+        return 1ll * x * x + 1ll * y * y;
+    }
+
+    ld len() const {
+        return sqrt(len2());
+    }
+
+    ll cross(Vec v) const {
+        return 1ll * x * v.y - 1ll * y * v.x;
+    }
+
+    ll dot(Vec v) const {
+        return 1ll * x * v.x + 1ll * y * v.y;
+    }
+};
+
+istream& operator>> (istream& in, Vec& v) {
+    return in >> v.x >> v.y;
+}
+
+ostream& operator<< (ostream& out, const Vec& v) {
+    return out << v.x << ' ' << v.y;
+}
+
+struct Line {
+    int a, b, c;
+
+    Line(int a = 0, int b = 0, int c = 0): a(a), b(b), c(c) {}
+
+    Line(const Point& f, const Point& s) {
+        a = f.y - s.y;
+        b = s.x - f.x;
+        c = -a * f.x - b * f.y;
+    }
+
+    Vec get_direct_vector() const {
+        return Vec(-b, a);
+    }
+};
+
+
+istream& operator>>(istream& in, Line& l) {
+    return in >> l.a >> l.b >> l.c;
+}
+
+ostream& operator<<(ostream& out, const Line& l) {
+    return out << l.a << ' ' << l.b << ' ' << l.c;
+}
+
+bool comp(const Vec& v1, const Vec& v2) {
+    bool f1 = v1.y > 0 || (v1.y == 0 && v1.x > 0);
+    bool f2 = v2.y > 0 || (v2.y == 0 && v2.x > 0);
+    if (f1 != f2) {
+        return f1;
+    }
+    return v1.cross(v2) >= 0;
+}
+
+struct Polygon {
+    vector<Point> points;
+    vector<Vec> vectors;
+    int n;
+
+    Polygon(const vector<Point>& a) {
+        n = a.size();
+        int ind_d = 0;
+        for (int i = 1; i < n; i++) {
+            if(a[i].y < a[ind_d].y || (a[i].y == a[ind_d].y && a[i].x < a[ind_d].x)) {
+                ind_d = i;
+            }
+        }
+        for(int i = ind_d; i < n; i++) {
+            points.push_back(a[i]);
+        }
+        for(int i = 0; i < ind_d; i++) {
+            points.push_back(a[i]);
+        }
+        vectors.resize(n);
+        for(int i = 1; i < n + 1; i++) {
+            vectors[i - 1] = Vec(points[i - 1], points[i % n]);
+        }
+    }
+
+    Line get_tangent(Vec v) {
+        if(vectors[0].cross(v) <= 0 && vectors.back().cross(v) >= 0) {
+            Line ans;
+            ans.a = -v.y;
+            ans.b = v.x;
+            ans.c = -ans.a * points[0].x - ans.b * points[0].y;
+            return ans;
+        }
+        int i = lower_bound(vectors.begin(), vectors.end(), v, comp) - vectors.begin();
+        Line ans;
+        ans.a = -v.y;
+        ans.b = v.x;
+        ans.c = -ans.a * points[i].x - ans.b * points[i].y;
+        return ans;
+    }
+};
+
+vector<Point> get_hull(vector<Point> a) {
+    Point down = a[0];
+    for (auto x : a) {
+        if (x.x < down.x || (x.x == down.x && x.y < down.y)) {
+            down = x;
+        }
+    }
+
+    auto cmp = [&](Point a, Point b) {
+        if (a == down) {
+            return false;
+        }
+        if (b == down) {
+            return true;
+        }
+        if (Vec(down, a).cross(Vec(down, b)) == 0) {
+            return Vec(down, a).len() < Vec(down, b).len();
+        }
+        return Vec(down, a).cross(Vec(down, b)) < 0;
+    };
+
+    sort(a.begin(), a.end(), cmp);
+    vector<Point> st;
+    st.push_back(down);
+    for (auto x : a) {
+        while (st.size() > 1 && st[st.size() - 2] != x && Vec(st[st.size() - 2], st.back()).cross(Vec(st[st.size() - 2], x)) >= 0) {
+            st.pop_back();
+        }
+        st.push_back(x);
+    }
+    st.pop_back();
+    reverse(st.begin(), st.end());
+    return st;
+}
+```
 ]
